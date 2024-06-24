@@ -1,4 +1,11 @@
 {
   "name": "NeoDummyShop",
-  "displayName": "NeoDummyShop"
+  "displayName": "NeoDummyShop",
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "5a82201f-7104-420e-94f9-bacf66d5e2c8"
+      }
+    }
+  }
 }

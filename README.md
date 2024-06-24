@@ -1,4 +1,7 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# NeoDummyShop
+## Same as [**DummyShop**](https://reactnative.dev) but without Expo.
+
+This is a new [**React Native**](https://github.com/rahulsenna/DummyShop--react-native-expo-) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
 
