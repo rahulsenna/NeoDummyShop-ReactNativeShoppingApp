@@ -3,10 +3,10 @@ import { ActivityIndicator, Image, Pressable, Text, useColorScheme, View, } from
 
 import { FlashList } from '@shopify/flash-list';
 import {  NativeStackScreenProps  } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/RootStackParams';
-import { Product } from '../types/Product';
-import { getItems } from '../utils/apis';
-import createProductStyles from '../styles/ProductStyle';
+import { RootStackParamList } from '@my_types/RootStackParams';
+import { Product } from '@my_types/Product';
+import { fetchProducts } from '@apis';
+import createProductStyles from '@styles/ProductStyle';
 
 type ProductListProps = NativeStackScreenProps<RootStackParamList, 'ProductList'>;
 const ProductListScreen: React.FC<ProductListProps> = ({ navigation }) =>
@@ -28,7 +28,7 @@ const ProductListScreen: React.FC<ProductListProps> = ({ navigation }) =>
   {
     try 
     {
-        const data = await getItems(skip, limit);
+        const data = await fetchProducts(skip, limit);
         setProducts(prevProducts => [...prevProducts, ...data.products]);
         setLoading(false);
         setLoadingMore(false);

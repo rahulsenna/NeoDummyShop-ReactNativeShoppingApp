@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, useColorScheme, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../types/RootStackParams";
-import { Product } from "../types/Product";
-import { getAnItem } from "../utils/apis";
+import { RootStackParamList } from "@my_types/RootStackParams";
+import { Product } from "@my_types/Product";
+import { fecthProductByID } from "@apis";
 import { FlashList } from "@shopify/flash-list";
-import createProductStyles from "../styles/ProductStyle";
+import createProductStyles from "@styles/ProductStyle";
 
 
 type ProductDetailsProp = NativeStackScreenProps<RootStackParamList, 'ProductDetails'>;
@@ -28,7 +28,7 @@ const ProductDetailsScreen: React.FC<ProductDetailsProp> = ({ navigation, route 
   {  
     try
     {
-        const data = await getAnItem(id);
+        const data = await fecthProductByID(id);
         setProduct(data);
         setLoading(false);
     }
