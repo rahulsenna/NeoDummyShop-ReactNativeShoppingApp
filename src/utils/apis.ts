@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Product } from '@my_types/Product';
 import { useSession } from '@app';
 import { User } from '@screens/ProfileScreen';
+import { Cart } from '@screens/CartScreen';
 
 axios.defaults.baseURL = 'https://dummyjson.com/';
 
@@ -20,7 +21,7 @@ export const register = async (userid: string, password: string): Promise<void> 
 };
 
 export const login = async (username: string, password: string): Promise<AuthResponse> => {
-  const response = await axios.post(`auth/login`, { username, password, expiresInMins: 30 });  
+  const response = await axios.post(`auth/login`, { username, password, expiresInMins: 1 });
   return response.data;
 };
 
@@ -43,7 +44,10 @@ export const fecthProductByID = async (id: number) : Promise<Product> =>{
   return response.data;
 }
 
-
+export const fecthCartByID = async (id: number) : Promise<Cart> =>{
+  const response = await axios.get<Cart>(`carts/${id}`);
+  return response.data;
+}
 
 
 export const setAuthToken = async (token: string) : Promise<void> =>{

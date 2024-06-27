@@ -15,6 +15,7 @@ import LoginScreen from '@screens/LoginScreen';
 import * as Keychain from 'react-native-keychain';
 import api, { AuthResponse, removeAuthToken, setAuthToken } from '@apis';
 import ProfileScreen from '@screens/ProfileScreen';
+import CartScreen from '@screens/CartScreen';
 
 const AuthContext = React.createContext<{
   signIn: (token: string, refresh_token: string) => void;
@@ -180,7 +181,7 @@ const App: React.FC = () => {
       <Tab.Navigator screenOptions={{ tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint, headerShown: false, }}>
         <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home', tabBarIcon: ({ focused, color }) => (<TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />), }} />
         <Tab.Screen name="You" component={User} options={{ tabBarLabel: 'You', tabBarIcon: ({ focused, color }) => (<TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />), }} />
-        <Tab.Screen name="Cart" component={SettingsScreen} options={{ tabBarLabel: 'Cart', tabBarIcon: ({ focused, color }) => (<TabBarIcon name={focused ? 'cart' : 'cart-outline'} color={color} />), }} />
+        <Tab.Screen name="Cart" component={CartScreen} options={{ tabBarLabel: 'Cart', tabBarIcon: ({ focused, color }) => (<TabBarIcon name={focused ? 'cart' : 'cart-outline'} color={color} />), }} />
         <Tab.Screen name="Menu" component={SettingsScreen} options={{ tabBarLabel: 'Menu', tabBarIcon: ({ focused, color }) => (<TabBarIcon name={focused ? 'menu' : 'menu-outline'} color={color} />), }} />
       </Tab.Navigator>
     </NavigationContainer>
