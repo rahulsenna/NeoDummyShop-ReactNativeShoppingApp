@@ -1,113 +1,180 @@
-import { useSession } from "@app";
-import { useEffect, useState } from "react";
-import { ActivityIndicator, Button, Image, StyleSheet, Text, View } from "react-native";
-import { fetchUser } from "@apis";
+import { fetchUser } from '@apis';
+import { useSession } from '@app';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, ScrollView, useColorScheme, StyleSheet, ActivityIndicator, Button } from 'react-native';
 
 export interface User {
-    id: number;
-    username: string;
-    email: string;
-    firstName: string;
-    lastName: string;
-    gender: string;
-    image: string;
-    // add other user fields if necessary
-  }
-  
-  const ProfileScreen: React.FC = () => {
-    const [user, setUser] = useState<User | null>(null);
-    const [loading, setLoading] = useState(true);
-  
-    const { signOut, session } = useSession();
-  
-    useEffect(() => {
-      const fetchUserData = async () => {
-        try {
-          const data: User = await fetchUser(session?.token!);
-          setUser(data);
-        } catch (error: any) {
-          console.error('Error fetching user data:', error);
-        } finally {
-          setLoading(false);
-        }
+  id: number;
+  username: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  gender: string;
+  image: string;
+  age: number;
+  maidenName: string;
+  phone: string;
+  birthDate: string;
+  bloodGroup: string;
+  height: number;
+  weight: number;
+  eyeColor: string;
+  hair: {
+    color: string;
+    type: string;
+  };
+  ip: string;
+  address: {
+    address: string;
+    city: string;
+    state: string;
+    stateCode: string;
+    postalCode: string;
+    coordinates: {
+      lat: number;
+      lng: number;
+    };
+    country: string;
+  };
+  macAddress: string;
+  university: string;
+  bank: {
+    cardExpire: string;
+    cardNumber: string;
+    cardType: string;
+    currency: string;
+    iban: string;
+  };
+  company: {
+    department: string;
+    name: string;
+    title: string;
+    address: {
+      address: string;
+      city: string;
+      state: string;
+      stateCode: string;
+      postalCode: string;
+      coordinates: {
+        lat: number;
+        lng: number;
       };
+      country: string;
+    };
+  };
+  ein: string;
+  ssn: string;
+  userAgent: string;
+  crypto: {
+    coin: string;
+    wallet: string;
+    network: string;
+  };
+  role: string;
+}
+
+const ProfileScreen: React.FC = () => {
   
-      fetchUserData();
-    }, [session]);
-  
-    if (loading) {
-      return (
-        <View style={styles.loaderContainer}>
-          <ActivityIndicator size="large" color="#841584" />
-        </View>
-      );
-    }
-  
-    if (!user) {
-      return (
-        <View style={styles.container}>
-          <Text style={styles.errorText}>Failed to load user data</Text>
-        </View>
-      );
-    }
-  
+  const { signOut, session } = useSession();
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data: User = await fetchUser(session?.token!);
+        setUser(data);
+      } catch (error: any) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserData();
+  }, [session]);
+
+
+
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
+  const styles = createStyles(isDarkMode);
+
+  if (loading) {
     return (
       <View style={styles.container}>
-        <Image source={{ uri: user.image }} style={styles.profileImage} />
-        <Text style={styles.name}>{`${user.firstName} ${user.lastName}`}</Text>
-        <Text style={styles.username}>@{user.username}</Text>
-        <Text style={styles.email}>{user.email}</Text>
-        <Text style={styles.gender}>{user.gender}</Text>
-        {/* Render other user fields as necessary */}
-        <Button title='Logout' onPress={signOut}/>
+        <ActivityIndicator size="large" color="#841584" />
       </View>
     );
-  };
+  }
+
+  if (!user) {
+    return (
+      <View >
+        <Text>Failed to load user data</Text>
+      </View>
+    );
+  }
   
-  const styles = StyleSheet.create({
+  return (
+    <View style={styles.container}>
+      <ScrollView showsVerticalScrollIndicator={false} >
+        <Image source={{ uri: user.image }} style={styles.profileImage} />
+        <Text style={styles.name}>{`${user.firstName} ${user.lastName}`}</Text>
+        <Text style={styles.info}>{`Age: ${user.age}`}</Text>
+        <Text style={styles.info}>{`Gender: ${user.gender}`}</Text>
+        <Text style={styles.info}>{`Email: ${user.email}`}</Text>
+        <Text style={styles.info}>{`Phone: ${user.phone}`}</Text>
+        <Text style={styles.sectionTitle}>Address</Text>
+        <Text style={styles.info}>{`${user.address.address}, ${user.address.city}, ${user.address.state} ${user.address.postalCode}, ${user.address.country}`}</Text>
+        <Text style={styles.sectionTitle}>Company</Text>
+        <Text style={styles.info}>{`Name: ${user.company.name}`}</Text>
+        <Text style={styles.info}>{`Department: ${user.company.department}`}</Text>
+        <Text style={styles.info}>{`Title: ${user.company.title}`}</Text>
+        <Text style={styles.sectionTitle}>Crypto</Text>
+        <Text style={styles.info}>{`Coin: ${user.crypto.coin}`}</Text>
+        <Text style={styles.info}>{`Wallet: ${user.crypto.wallet}`}</Text>
+        <Button title='Logout' onPress={signOut} color={isDarkMode ? "#555" : "#007AFF"} />
+      </ScrollView>
+    </View>
+  );
+  
+};
+
+const createStyles = (isDarkMode: boolean) =>
+  StyleSheet.create({
     container: {
       flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      padding: 20,
-      backgroundColor: '#f5f5f5',
-    },
-    loaderContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
+      backgroundColor: isDarkMode ? '#1E1E1E' : '#FFFFFF',
+      padding: 16,
     },
     profileImage: {
-      width: 128,
-      height: 128,
-      borderRadius: 64,
-      marginBottom: 20,
+      width: 150,
+      height: 150,
+      borderRadius: 75,
+      alignSelf: 'center',
+      marginBottom: 16,
     },
     name: {
       fontSize: 24,
       fontWeight: 'bold',
-      color: '#333',
+      color: isDarkMode ? '#FFFFFF' : '#000000',
+      textAlign: 'center',
+      marginBottom: 8,
     },
-    username: {
-      fontSize: 18,
-      color: '#666',
-      marginBottom: 10,
-    },
-    email: {
+    info: {
       fontSize: 16,
-      color: '#333',
-      marginBottom: 5,
+      color: isDarkMode ? '#FFFFFF' : '#000000',
+      marginBottom: 4,
     },
-    gender: {
-      fontSize: 16,
-      color: '#333',
-    },
-    errorText: {
+    sectionTitle: {
       fontSize: 18,
-      color: 'red',
+      fontWeight: 'bold',
+      color: isDarkMode ? '#FFFFFF' : '#000000',
+      marginTop: 16,
+      marginBottom: 8,
     },
   });
-  
-  export default ProfileScreen;
-  
-  
+
+
+
+export default ProfileScreen;
