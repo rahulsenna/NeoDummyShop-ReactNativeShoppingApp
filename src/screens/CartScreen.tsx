@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, StyleSheet, useColorScheme } from 'react-native';
+import { View, Text, Image, StyleSheet, useColorScheme } from 'react-native';
 // import { Product } from '@my_types/Product';
 import { fecthCartByID } from '@apis';
+import { FlashList } from '@shopify/flash-list';
 
 interface Product {
     id: number;
@@ -56,7 +57,7 @@ const CartScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <FlatList
+      <FlashList
         data={cart.products}
         keyExtractor={item => item.id.toString()}
         renderItem={({ item }) => (
