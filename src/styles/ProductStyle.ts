@@ -118,6 +118,10 @@ const createProductStyles = (isDarkMode: boolean) => StyleSheet.create({
       fontSize: 14,
       color: isDarkMode ? '#aaa' : '#555',
     },
+    star: {
+      fontSize: 18,
+      color: isDarkMode ? '#ffd700' : '#ffd700',
+    },
   });
 
   export default createProductStyles;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, useColorScheme, View } from "react-native";
+import { Image, Pressable, ScrollView, Text, useColorScheme, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@my_types/RootStackParams";
 import { Product } from "@my_types/Product";
@@ -14,6 +14,7 @@ const ProductDetailsScreen: React.FC<ProductDetailsProp> = ({ navigation, route 
 
   const [product, setProduct] = useState<Product>();
   const [loading, setLoading] = useState(true);
+  const [reviewsCollapsed, setReviewsCollapsed] = useState(true);
   const colorScheme = useColorScheme();
 
   // useEffect(() => {
@@ -42,6 +43,18 @@ const ProductDetailsScreen: React.FC<ProductDetailsProp> = ({ navigation, route 
 
   const isDarkMode = colorScheme === 'dark';
   const styles = createProductStyles(isDarkMode);
+
+  const renderStars = (rating: number) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      stars.push(
+        <Text key={i} style={styles.star}>
+          {i <= rating ? '★' : '☆'}
+        </Text>
+      );
+    }
+    return stars;
+  };
 
   if (loading ) {
     return (
@@ -89,8 +102,12 @@ const ProductDetailsScreen: React.FC<ProductDetailsProp> = ({ navigation, route 
     <Text style={styles.returnPolicy}>Return Policy: {product.returnPolicy}</Text>
     <Text style={styles.tags}>Tags: {product.tags.join(', ')}</Text>
 
+    <Pressable onPress={() => setReviewsCollapsed(!reviewsCollapsed)}>
+        <Text style={styles.reviewsTitle}>Reviews {reviewsCollapsed ? '▼' : '▲'}</Text>
+    </Pressable>
+
+    {!reviewsCollapsed && (
     <View style={styles.reviewsContainer}>
-      <Text style={styles.reviewsTitle}>Reviews:</Text>
       {product.reviews.length === 0 ? (
         <Text>No reviews available</Text>
       ) : (
@@ -100,7 +117,7 @@ const ProductDetailsScreen: React.FC<ProductDetailsProp> = ({ navigation, route 
           keyExtractor={(_, index) => index.toString()}
           renderItem={({ item }) => (
             <View style={styles.reviewItem}>
-              <Text style={styles.reviewRating}>Rating: {item.rating}</Text>
+              <Text style={styles.reviewRating}>Rating: {renderStars(item.rating)}</Text>
               <Text style={styles.reviewComment}>{item.comment}</Text>
               <Text style={styles.reviewDate}>Date: {new Date(item.date).toLocaleDateString()}</Text>
               <Text style={styles.reviewReviewer}>By: {item.reviewerName}</Text>
@@ -109,6 +126,7 @@ const ProductDetailsScreen: React.FC<ProductDetailsProp> = ({ navigation, route 
         />
       )}
     </View>
+      )}
   </ScrollView>
   
 
