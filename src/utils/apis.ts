@@ -48,7 +48,17 @@ export const fecthCartByID = async (id: number) : Promise<Cart> =>{
   const response = await axios.get<Cart>(`carts/${id}`);
   return response.data;
 }
-
+export const updateCart = async (items: string[]) : Promise<Cart> =>{
+  const products = items.map(item => { return { id: Number(item), quantity: 1 } });
+  console.log("products: ", products)
+  const response = await axios.put<Cart>(`carts/1`,
+    {
+      merge: true, // this will include existing products in the cart
+      products: products
+    }
+  );
+  return response.data;
+}
 
 export const setAuthToken = async (token: string) : Promise<void> =>{
   axios.defaults.headers.common['Authorization'] = token;

@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, useColorScheme } from 'react-native';
 // import { Product } from '@my_types/Product';
-import { fecthCartByID } from '@apis';
+import { fecthCartByID, updateCart } from '@apis';
 import { FlashList } from '@shopify/flash-list';
+import { useStorage } from "src/context/StorageProvier";
 
 interface Product {
     id: number;
@@ -29,17 +30,28 @@ const CartScreen: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const colorScheme = useColorScheme();
+  const { itemIds } = useStorage();
 
   useEffect(() => {
     loadCart();
-  }, []);
+  }, [itemIds]);
 
   const loadCart = async () => 
   {  
     try
     {
-        const data = await fecthCartByID(1);
-        setCart(data);
+        setLoading(true);
+        
+        if (itemIds)
+        {
+          const data = await updateCart(itemIds);
+          setCart(data);
+        } else
+        {
+          const data = await fecthCartByID(1);
+          setCart(data);
+        }
+          
         setLoading(false);
     }
     catch(error) 
@@ -47,11 +59,12 @@ const CartScreen: React.FC = () => {
         console.error(error);
         setLoading(false); 
     }
+    setLoading(false);
   };
 
   const styles = createStyles(colorScheme === 'dark');
 
-  if (!cart) {
+  if (!cart || loading) {
     return <Text style={styles.loadingText}>Loading...</Text>;
   }
 
@@ -67,7 +80,16 @@ const CartScreen: React.FC = () => {
               <Text style={styles.productTitle}>{item.title}</Text>
               <Text style={styles.productPrice}>${item.price.toFixed(2)}</Text>
               <Text style={styles.productQuantity}>Quantity: {item.quantity}</Text>
-              <Text style={styles.productTotal}>Total: ${item.discountedTotal.toFixed(2)}</Text>
+              <View style={styles.totalPriceContainer}>
+              <Text style={styles.discountPercent}> {item.discountPercentage}% </Text>
+              <Text style={styles.productTotal}> ${item.total.toFixed(2)}</Text>
+              </View>
+              <View style={styles.totalPriceContainer}>
+              <Text style={styles.discountTotal}>MRP: </Text>
+              <Text style={{...styles.discountTotal, textDecorationLine:'line-through'}}>${(item.total + (item.total*(item.discountPercentage/100))).toFixed(2)}</Text>
+
+              </View>
+
             </View>
           </View>
         )}
@@ -95,6 +117,11 @@ const createStyles = (isDarkMode: boolean) =>
       color: isDarkMode ? '#ffffff' : '#000000',
       textAlign: 'center',
       marginTop: 20,
+    },
+    totalPriceContainer:
+    {
+      flexDirection: "row",
+      
     },
     cartSummary: {
       marginBottom: 16,
@@ -141,6 +168,18 @@ const createStyles = (isDarkMode: boolean) =>
       fontWeight: 'bold',
       color: isDarkMode ? '#ffffff' : '#000000',
     },
+    discountPercent:
+    {
+      fontSize: 14,
+      color: '#f3426c',
+      marginBottom: 4,
+    },
+    discountTotal:
+    {
+      fontSize: 14,
+      color: isDarkMode ? '#acaaa1' : '#565959',
+      marginBottom: 4,
+    }
   });
 
 export default CartScreen;

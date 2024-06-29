@@ -16,6 +16,7 @@ import * as Keychain from 'react-native-keychain';
 import api, { AuthResponse, removeAuthToken, setAuthToken } from '@apis';
 import ProfileScreen from '@screens/ProfileScreen';
 import CartScreen from '@screens/CartScreen';
+import { StorageProvider } from 'src/context/StorageProvier';
 
 const AuthContext = React.createContext<{
   signIn: (token: string, refresh_token: string) => void;
@@ -58,7 +59,7 @@ const SettingsScreen: React.FC = () => {
 const Home = () =>
 (
   <HomeStack.Navigator initialRouteName='ProductList'>
-    <HomeStack.Screen name="ProductList" component={ProductListScreen} />
+    <HomeStack.Screen name="ProductList" component={ProductListScreen} options={{ title: "Home" }} />
     <HomeStack.Screen name="ProductDetails" component={ProductDetailsScreen} />
   </HomeStack.Navigator>
 )
@@ -177,6 +178,7 @@ const App: React.FC = () => {
   } */
   return (
     <AuthContext.Provider value={authContext}>
+    <StorageProvider>
     <NavigationContainer theme={isDarkMode ? DarkTheme : DefaultTheme}>
       <Tab.Navigator screenOptions={{ tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint, headerShown: false, }}>
         <Tab.Screen name="Home" component={Home} options={{ tabBarLabel: 'Home', tabBarIcon: ({ focused, color }) => (<TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />), }} />
@@ -185,8 +187,8 @@ const App: React.FC = () => {
         <Tab.Screen name="Menu" component={SettingsScreen} options={{ tabBarLabel: 'Menu', tabBarIcon: ({ focused, color }) => (<TabBarIcon name={focused ? 'menu' : 'menu-outline'} color={color} />), }} />
       </Tab.Navigator>
     </NavigationContainer>
+    </StorageProvider>
     </AuthContext.Provider>
-
   );
 }
 

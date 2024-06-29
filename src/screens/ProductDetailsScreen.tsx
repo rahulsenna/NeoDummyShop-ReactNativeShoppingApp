@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { Image, Pressable, ScrollView, Text, useColorScheme, View } from "react-native";
+import { Button, Image, Pressable, ScrollView, Text, useColorScheme, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParamList } from "@my_types/RootStackParams";
 import { Product } from "@my_types/Product";
 import { fecthProductByID } from "@apis";
 import { FlashList } from "@shopify/flash-list";
 import createProductStyles from "@styles/ProductStyle";
+import { useStorage } from "src/context/StorageProvier";
 
 
 type ProductDetailsProp = NativeStackScreenProps<RootStackParamList, 'ProductDetails'>;
@@ -16,10 +17,11 @@ const ProductDetailsScreen: React.FC<ProductDetailsProp> = ({ navigation, route 
   const [loading, setLoading] = useState(true);
   const [reviewsCollapsed, setReviewsCollapsed] = useState(true);
   const colorScheme = useColorScheme();
+  const { itemIds, setItemIds } = useStorage();
 
-  // useEffect(() => {
-  //   navigation.setOptions({ headerShown: true, title: product?.title });
-  // }, [navigation, product]);
+  useEffect(() => {
+    navigation.setOptions({ headerShown: true, title: product?.title });
+  }, [navigation, product]);
 
   useEffect(() => {
     loadProduct();
@@ -101,6 +103,11 @@ const ProductDetailsScreen: React.FC<ProductDetailsProp> = ({ navigation, route 
     <Text style={styles.shipping}>Shipping: {product.shippingInformation}</Text>
     <Text style={styles.returnPolicy}>Return Policy: {product.returnPolicy}</Text>
     <Text style={styles.tags}>Tags: {product.tags.join(', ')}</Text>
+    { itemIds?.includes(id.toString()) ? (<Text style={{...styles.loadingText, textAlign: "center"}}>in Cart</Text>) :(
+        <Button title="Add to Cart" onPress={() => { setItemIds(id.toString()) }} />)
+    }
+    <Text></Text>
+    <Button title="Buy Now" onPress={() => { console.log("Buy Now") }} />
 
     <Pressable onPress={() => setReviewsCollapsed(!reviewsCollapsed)}>
         <Text style={styles.reviewsTitle}>Reviews {reviewsCollapsed ? '▼' : '▲'}</Text>
