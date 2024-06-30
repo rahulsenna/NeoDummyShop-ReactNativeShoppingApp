@@ -81,7 +81,7 @@ const CartScreen: React.FC = () => {
               <Text style={styles.productPrice}>${item.price.toFixed(2)}</Text>
               <Text style={styles.productQuantity}>Quantity: {item.quantity}</Text>
               <View style={styles.totalPriceContainer}>
-              <Text style={styles.discountPercent}> {item.discountPercentage}% </Text>
+              <Text style={styles.discountPercent}> -{item.discountPercentage}% </Text>
               <Text style={styles.productTotal}> ${item.total.toFixed(2)}</Text>
               </View>
               <View style={styles.totalPriceContainer}>
